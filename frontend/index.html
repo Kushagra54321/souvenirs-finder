@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Travel Souvenir Finder</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-logo">🌍 Souveni.Ai</div>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#category-info">Categories</a></li>
+      <li><a href="#footer">Contact</a></li>
+    </ul>
+  </nav>
+  
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>🌟 Discover Unique Souvenirs from Around the World</h1>
+      <p>Let AI be your global shopping companion for memories that last.</p>
+      <div class="search-box">
+        <input type="text" id="destinationInput" placeholder="Enter a destination (e.g., Paris, Tokyo)..." />
+        <button onclick="findSouvenirs()">🎁 Search</button>
+      </div>
+    </div>
+  </section>
+  
+
+  <!-- Popular Categories
+   <section>
+    <div class="card" onclick="showCategoryInfo('Handmade Crafts')">🎨 Handmade Crafts</div>
+    <div class="card" onclick="showCategoryInfo('Local Clothing')">👕 Local Clothing</div>
+    <div class="card" onclick="showCategoryInfo('Edible Gifts')">🍬 Edible Gifts</div>
+    <div class="card" onclick="showCategoryInfo('Spiritual Products')">🧘 Spiritual Products</div>
+  </section> -->
+
+  <!-- Chatbot Section -->
+  <!-- <section class="category-info-section" id="category-info">
+    <h2>🧾 Category Info</h2>
+    <div id="categoryContent" class="result-box">Click on a category to learn more.</div>
+  </section> -->
+  
+  <section class="chatbot-section" id="chat">
+    <h2>Your Personalized Results ✨</h2>
+    <div id="result" class="result-box">Start by entering a destination above!</div>
+  </section>
+
+  <section id="about">
+    <h2>About Us</h2>
+    <p>
+       Souvenir Finder
+      Our AI-powered Travel Souvenir Finder helps travelers discover unique and personalized souvenirs based on the places they visit. 
+      By using intelligent location detection and curated databases, it offers meaningful gift suggestions 
+      that reflect local culture, traditions, and experiences—making every trip memorable.
+    </p>
+  </section>
+  <!-- Footer -->
+  <footer id="footer">
+    <p>&copy; 2025 AI Souvenir Finder | Built with ❤️ by Kushagra, Vikram, Pranay </p> 
+      
+      <h2>Contact Us With</h2>
+      <a href="https://www.instagram.com/kushagra.__.01/">Instagram</a> & 
+      <a href="#">Twitter</a>
+      <p>
+        Have questions or feedback? Email us at
+        <a href="mailto:kushagrasingh54321@gmail.com">kushagrasingh54321@gmail.com</a>
+      </p>
+  </footer>
+
+  <!-- JS -->
+   <script>
+//     const categoryData = {
+//   "Handmade Crafts": {
+//     description: "Handmade crafts represent the local artistry of a region. These include pottery, textiles, wood carvings, and decorative items crafted by local artisans.",
+//     image: "https://images.unsplash.com/photo-1585655851325-1b88a097bd52",
+//     link: "https://www.google.com/search?q=handmade+crafts+souvenirs"
+//   },
+//   "Local Clothing": {
+//     description: "Local clothing souvenirs often reflect traditional attire and regional fabrics, like saris in India, kimonos in Japan, or alpaca wool garments in Peru.",
+//     image: "https://images.unsplash.com/photo-1603252110481-df8499c0c9ed",
+//     link: "https://www.google.com/search?q=local+clothing+souvenirs"
+//   },
+//   "Edible Gifts": {
+//     description: "These include regional snacks, spices, sweets, and beverages. Popular options include Swiss chocolates, Turkish delights, and Italian olive oils.",
+//     image: "https://images.unsplash.com/photo-1565895405227-2cc5b4a29d53",
+//     link: "https://www.google.com/search?q=edible+souvenirs"
+//   },
+//   "Spiritual Products": {
+//     description: "These souvenirs include prayer flags, incense, religious icons, and spiritual jewelry that represent the local beliefs and culture.",
+//     image: "https://images.unsplash.com/photo-1581338834647-7525b2827f79",
+//     link: "https://www.google.com/search?q=spiritual+souvenirs"
+//   }
+// };
+
+function showCategoryInfo(category) {
+  const data = categoryData[category];
+  const div = document.getElementById("categoryContent");
+  div.innerHTML = `
+    <h3>${category}</h3>
+    <p>${data.description}</p>
+    <img src="${data.image}" style="max-width:300px; border-radius:10px; margin:1rem 0;" />
+    
+    <p><strong>Map:</strong> <a href="${data.location.map_link}" class="map-btn" target="_blank">🗺️ Explore ${data.location.formatted}</a></p>
+
+  `;
+}
+
+  async function findSouvenirs() {
+    const destination = document.getElementById('destinationInput').value;
+    const response = await fetch('http://127.0.0.1:5000/get_souvenirs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ destination: destination })
+    });
+  
+    const data = await response.json();
+    const resultDiv = document.getElementById('result');
+  
+    if (data.error) {
+      resultDiv.innerText = data.error;
+      return;
+    }
+  
+    /*resultDiv.innerHTML = `
+      <h3>🎁 AI Recommended Souvenirs:</h3>
+      <p>${data.souvenirs}</p>
+      ${data.location ? `
+        <h3>📍 Location Details:</h3>
+        <p><strong>Place:</strong> ${data.location.formatted}</p>
+        <p><a href="${data.location.map_link}" target="_blank">View on Google Maps</a></p>
+      ` : ''}
+  
+      ${data.images.length ? `<h3>📸 Place Images:</h3>
+        <div style="display:flex; gap:1rem; flex-wrap: wrap;">
+          ${data.images.map(url => `<img src="${url}" style="max-width:200px; border-radius:8px;" />`).join('')}
+        </div>` : ''}
+    `;*/
+    resultDiv.innerHTML = `
+  <h2 style="font-family: 'Pacifico', cursive;">🎁 AI Recommended Souvenirs</h2>
+  <p style="font-size: 1.1rem; line-height: 1.6;">${data.souvenirs}</p>
+
+  <h2 style="font-family: 'Pacifico', cursive;">📍 Location Overview</h2>
+  <p><strong>Place:</strong> ${data.location.formatted}</p>
+  <p><a href="${data.location.map_link}" target="_blank">🌐 View on Google Maps</a></p>
+
+  ${data.images.length ? `
+    <h2 style="font-family: 'Pacifico', cursive;">📸 Stunning Images</h2>
+    <div style="display:flex; gap:1rem; flex-wrap: wrap; justify-content:center;">
+      ${data.images.map(url => `<img src="${url}" style="max-width:220px; border-radius:10px; box-shadow: 2px 2px 8px #aaa;" />`).join('')}
+    </div>` : ''}
+`;
+
+  }
+</script> 
+</body>
+</html>

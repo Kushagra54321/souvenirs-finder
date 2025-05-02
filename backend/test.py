@@ -1,2 +1,2 @@
 print("📢 Script started...")
-print("hell kushagra")
+print("hello kushagra")
